@@ -51,15 +51,6 @@ export const getChapter = async ({
       });
     }
 
-    if (purchase) {
-      nextChapter = await db.chapter.findFirst({
-        where: {
-          courseId: courseId,
-          isPublished: true,
-        },
-      });
-    }
-
     const userProgress = await db.userProgress.findUnique({
       where: {
         userId_chapterId: {

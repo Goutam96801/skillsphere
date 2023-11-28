@@ -52,10 +52,7 @@ export const VideoPlayer = ({
 
   
   return (
-    <div className="relative aspect-video">
-        {/* <div className="absolute inset-0 flex items-center justify-center bg-slate-800">
-          <Loader2 className="h-8 w-8 animate-spin text-secondary" />
-        </div> */}
+    <div className="relative h-[300px] ">
       <iframe
         title='Youtube Video'
         allow='accelerometer; gyroscope; picture-in-picture'

@@ -26,7 +26,6 @@ const ChapterIdPage = async ({
     chapter,
     course,
     attachments,
-    nextChapter,
     userProgress,
     purchase,
   } = await getChapter({
@@ -34,7 +33,6 @@ const ChapterIdPage = async ({
     chapterId: params.chapterId,
     courseId: params.courseId,
   });
-
   if (!chapter || !course) {
     return redirect("/")
   }
@@ -56,19 +54,18 @@ const ChapterIdPage = async ({
 
   return ( 
     <div>
-      {userProgress?.isCompleted && (
+      {/* {userProgress?.isCompleted && (
         <Banner
           variant="success"
           label="You already completed this chapter."
         />
-      )}
+      )} */}
       <div className="flex flex-col max-w-4xl mx-auto pb-20">
         <div className="p-4">
           <VideoPlayer
             chapterId={params.chapterId}
             title={chapter.title}
             courseId={params.courseId}
-            nextChapterId={nextChapter?.id}
             playbackId={playbackId!}
             completeOnEnd={completeOnEnd}
           />
@@ -83,7 +80,6 @@ const ChapterIdPage = async ({
               <CourseProgressButton
                 chapterId={params.chapterId}
                 courseId={params.courseId}
-                nextChapterId={nextChapter?.id}
                 isCompleted={!!userProgress?.isCompleted}
               />
             ) : (

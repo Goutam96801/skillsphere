@@ -75,7 +75,7 @@ const CompilerPage = () => {
                     <h4>Output:</h4>
                     {loading ? (
                         <div className="spinner-box">
-                            alt="Loading..."
+                            Loading...
                         </div>
                     ) : (
                         <div className="output-box">

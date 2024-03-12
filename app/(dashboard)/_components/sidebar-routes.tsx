@@ -15,11 +15,6 @@ const guestRoutes = [
         label:"All Courses",
         href:"/search"
     },
-    {
-        icon: Braces,
-        label:"Compiler",
-        href:"/compiler"
-    },
 ];
 
 const adminRoutes = [

@@ -31,41 +31,89 @@ export const ChaptersList: React.FC<ChaptersListProps> = ({ courseId, playlistUr
 
   const apiKey = process.env.YOUTUBE_API_KEY;
 
+  // useEffect(() => {
+  //   if (playlistUrl) {
+  //     const regex = /list=([A-Za-z0-9_\-]+)/;
+  //     const match = playlistUrl.match(regex);
+
+  //     if (match && match[1]) {
+  //       const playlistId = match[1];
+  //       console.log(match[1])
+
+  //       // Fetch the playlist page and parse the video data
+  //       fetch(
+  //         `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}&key=${apiKey}`
+  //       )
+  //         .then((response) => response.json()) // Parse the response as JSON
+  //         .then(async (data) => {
+  //           if (data.items && data.items.length > 0) {
+  //             // Specify the type of 'item' as returned by the YouTube Data API
+  //             const videoList = data.items.map((item: any) => {
+  //               const title = item.snippet.title || 'Untitled Video';
+  //               return {
+  //                 videoId: item.snippet.resourceId.videoId,
+  //                 title: title,
+                  
+  //               };
+                
+  //             });
+  //             setVideos(videoList);
+  //           }
+  //         }) 
+  //         .catch((error) => {
+  //           console.error("Error fetching playlist page:", error);
+  //         });
+
+  //     }
+  //   }
+  // }, [playlistUrl]);
+
   useEffect(() => {
+
+    const fetchPlaylistVideos = async (playlistId:any) => {
+      let nextPageToken = '';
+      const fetchedVideos: Video[] = [];
+
+      try {
+        while (true) { // Keep fetching pages until there are no more to fetch
+          const response = await axios.get(`https://www.googleapis.com/youtube/v3/playlistItems`, {
+            params: {
+              part: 'snippet',
+              maxResults: 50,
+              playlistId: playlistId,
+              key: apiKey,
+              pageToken: nextPageToken,
+            },
+          });
+
+          response.data.items.forEach((item:any) => {
+            fetchedVideos.push({
+              videoId: item.snippet.resourceId.videoId,
+              title: item.snippet.title,
+            });
+          });
+
+          nextPageToken = response.data.nextPageToken;
+          if (!nextPageToken) {
+            break;
+          }
+        }
+
+        setVideos(fetchedVideos);
+      } catch (error) {
+        console.error("Error fetching playlist videos:", error);
+      }
+    };
+
     if (playlistUrl) {
       const regex = /list=([A-Za-z0-9_\-]+)/;
       const match = playlistUrl.match(regex);
 
-      if (match && match[1]) {
-        const playlistId = match[1];
-
-        // Fetch the playlist page and parse the video data
-        fetch(
-          `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}&key=${apiKey}`
-        )
-          .then((response) => response.json()) // Parse the response as JSON
-          .then(async (data) => {
-            if (data.items && data.items.length > 0) {
-              // Specify the type of 'item' as returned by the YouTube Data API
-              const videoList = data.items.map((item: any) => {
-                const title = item.snippet.title || 'Untitled Video';
-                return {
-                  videoId: item.snippet.resourceId.videoId,
-                  title: title,
-                  
-                };
-                
-              });
-              setVideos(videoList);
-            }
-          }) 
-          .catch((error) => {
-            console.error("Error fetching playlist page:", error);
-          });
-
+      if (match) {
+        fetchPlaylistVideos(match[1]);
       }
     }
-  }, [playlistUrl]);
+  }, [playlistUrl, apiKey]);
 
   const saveChapters = async () => {
     try {

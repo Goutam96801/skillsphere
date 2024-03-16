@@ -123,14 +123,16 @@ export const ChaptersList: React.FC<ChaptersListProps> = ({ courseId, playlistUr
         title: video.title,
         videoUrl: `https://www.youtube.com/watch?v=${video.videoId}`,
       }));
+      console.log(chaptersToSave.length)
       
       
       // Send a POST request to save chapters
       await axios.post(`/api/courses/${courseId}/chapters`, chaptersToSave);
       toast.success("Chapters saved");
     } catch (error) {
+      console.log(error)
       if(NextResponse.json(409)){
-        toast("Chapter already exist", {icon: '🤦‍♂️'})
+        toast("Chapter already exist", {icon: '🤦‍♂️'},)
       }else{
       toast.error("Something went wrong");
       }
